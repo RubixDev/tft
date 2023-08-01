@@ -1,0 +1,7 @@
+[default.extend-identifiers]
+edn = "edn"
+unknwn = "unknwn"
+ist = "ist"
+Ist = "Ist"
+mak = "mak"
+mata = "mata"
