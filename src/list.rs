@@ -11,6 +11,10 @@
     Default,
 )]
 #[strum(serialize_all = "lowercase", use_phf)]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde_with::SerializeDisplay, serde_with::DeserializeFromStr)
+)]
 #[non_exhaustive]
 pub enum FileType {
     #[default]
