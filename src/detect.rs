@@ -98,8 +98,14 @@ pub fn try_detect(path: &Path, content: &str) -> Option<FileType> {
     }
 
     // file contents
+    // TODO: try to guess from content (make public as separate function)
 
     None
+}
+
+fn asa(_path: &Path, _content: &str) -> Option<FileType> {
+    // TODO: user defined preferred asa filetype
+    Some(FileType::AspVbs)
 }
 
 fn asm(_path: &Path, content: &str) -> Option<FileType> {
@@ -172,6 +178,11 @@ fn bindzone(content: &str, default: Option<FileType>) -> Option<FileType> {
         true => Some(FileType::Bindzone),
         false => default,
     }
+}
+
+fn btm(_path: &Path, _content: &str) -> Option<FileType> {
+    // TODO: user defined dosbatch for btm
+    Some(FileType::Btm)
 }
 
 fn cfg(_path: &Path, content: &str) -> Option<FileType> {
@@ -254,6 +265,11 @@ fn copyright(_path: &Path, content: &str) -> Option<FileType> {
         true => Some(FileType::DebCopyright),
         false => None,
     }
+}
+
+fn cpp(_path: &Path, _content: &str) -> Option<FileType> {
+    // TODO: user defined cynlib for cpp
+    Some(FileType::Cpp)
 }
 
 fn cpy(_path: &Path, content: &str) -> Option<FileType> {
@@ -376,6 +392,11 @@ fn ent(_path: &Path, content: &str) -> Option<FileType> {
         }
     }
     Some(FileType::Dtd)
+}
+
+fn euphoria(_path: &Path, _content: &str) -> Option<FileType> {
+    // TODO: user defined preferred euphoria filetype
+    Some(FileType::Euphoria3)
 }
 
 fn ex(_path: &Path, content: &str) -> Option<FileType> {
@@ -1080,6 +1101,11 @@ fn smil(_path: &Path, content: &str) -> Option<FileType> {
         true => Some(FileType::Xml),
         false => Some(FileType::Smil),
     }
+}
+
+fn sql(_path: &Path, _content: &str) -> Option<FileType> {
+    // TODO: user defined preferred sql filetype
+    Some(FileType::Sql)
 }
 
 fn src(_path: &Path, content: &str) -> Option<FileType> {
