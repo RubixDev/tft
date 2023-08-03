@@ -16,11 +16,34 @@ mod path_suffix;
 mod pattern;
 mod util;
 
-pub fn detect(path: &Path, content: &str) -> FileType {
+/// Same as [`try_detect`] but automatically falling back to [`FileType::Text`] where
+/// [`try_detect`] would return [`None`].
+///
+/// # Example
+/// ```
+/// use tft::FileType;
+///
+/// assert_eq!(FileType::Rust, tft::detect("main.rs", ""));
+/// assert_eq!(FileType::Text, tft::detect("test.txt", ""));
+/// assert_eq!(FileType::Text, tft::detect("unsupported.filetype", ""));
+/// ```
+pub fn detect(path: impl AsRef<Path>, content: &str) -> FileType {
     try_detect(path, content).unwrap_or(FileType::Text)
 }
 
-pub fn try_detect(path: &Path, content: &str) -> Option<FileType> {
+/// Try to detect a [`FileType`] given a file's path and content.
+///
+/// # Example
+/// ```
+/// use tft::FileType;
+///
+/// assert_eq!(Some(FileType::Rust), tft::try_detect("main.rs", ""));
+/// assert_eq!(Some(FileType::Text), tft::try_detect("test.txt", ""));
+/// assert_eq!(None, tft::try_detect("unsupported.filetype", ""));
+/// ```
+pub fn try_detect(path: impl AsRef<Path>, content: &str) -> Option<FileType> {
+    let path = path.as_ref();
+
     // path suffix
     for (suffix, resolver) in PATH_SUFFIX {
         if path.ends_with(suffix) {
@@ -121,7 +144,7 @@ fn asp(_path: &Path, content: &str) -> Option<FileType> {
 
 fn bak(path: &Path, content: &str) -> Option<FileType> {
     // for files like `main.rs.bak` retry search without the `.bak` extension
-    try_detect(&path.with_extension(""), content)
+    try_detect(path.with_extension(""), content)
 }
 
 const VISUAL_BASIC_CONTENT: &[&str] = &[
@@ -1165,7 +1188,7 @@ fn tmp(path: &Path, content: &str) -> Option<FileType> {
     // for files like `main.rs~` retry search without the `~` suffix
     path.file_name()
         .and_then(|os_str| os_str.to_str())
-        .and_then(|name| try_detect(&path.with_file_name(&name[..name.len() - 1]), content))
+        .and_then(|name| try_detect(path.with_file_name(&name[..name.len() - 1]), content))
 }
 
 fn ts(_path: &Path, content: &str) -> Option<FileType> {

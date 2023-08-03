@@ -1,25 +1,59 @@
-#[derive(
-    strum::Display,
-    strum::AsRefStr,
-    strum::EnumString,
-    Clone,
-    Copy,
-    Debug,
-    Hash,
-    PartialEq,
-    Eq,
-    Default,
-)]
-#[strum(serialize_all = "lowercase", use_phf)]
-#[cfg_attr(
-    feature = "serde",
-    derive(serde_with::SerializeDisplay, serde_with::DeserializeFromStr)
-)]
-#[non_exhaustive]
-pub enum FileType {
-    #[default]
-    Text,
+macro_rules! list {
+    ($($variant:ident $(as $as:literal)?),* $(,)?) => {
+        /// A non-exhaustive list of text file types.
+        ///
+        /// The type derives the following traits for convenience. For (de)serialization to/from strings,
+        /// lowercase casing is used unless otherwise specified in the variants docs.
+        ///
+        /// - [`strum::Display`]: [`Display`](core::fmt::Display) formatting and a `.to_string()` method
+        /// - [`strum::AsRefStr`]: [`AsRef<str>`] impl
+        /// - [`strum::EnumString`]: [`FromStr`](core::str::FromStr) impl for turning strings into the
+        ///   corresponding variant
+        /// - [`strum::EnumVariantNames`]: an associated `VARIANTS` constant containing the string names of
+        ///   all variants (requires [`strum::VariantNames`] to be in scope)
+        /// - [`Clone`], [`Copy`]
+        /// - [`Debug`]
+        /// - [`Hash`]
+        /// - [`PartialEq`], [`Eq`]
+        /// - [`Default`]: the default is [`FileType::Text`]
+        /// - <span class="stab portability"><code>serde</code></span> [`serde::Serialize`]: serialize into
+        ///   a string
+        /// - <span class="stab portability"><code>serde</code></span> [`serde::Deserialize`]: deserialize
+        ///   from a string
+        #[derive(
+            strum::Display,
+            strum::AsRefStr,
+            strum::EnumString,
+            strum::EnumVariantNames,
+            Clone,
+            Copy,
+            Debug,
+            Hash,
+            PartialEq,
+            Eq,
+            Default,
+        )]
+        #[strum(serialize_all = "lowercase", use_phf)]
+        #[cfg_attr(
+            feature = "serde",
+            derive(serde_with::SerializeDisplay, serde_with::DeserializeFromStr)
+        )]
+        #[non_exhaustive]
+        pub enum FileType {
+            /// A plain text file. This is the default variant. (De)serialized as `text`.
+            #[default]
+            Text,
 
+            $(
+                #[doc = concat!("(De)serialized as `", $($as, "`, **not** `",)? casey::lower!(stringify!($variant)), "`.")]
+                $(#[strum(serialize = $as)])?
+                $variant,
+            )*
+        }
+    };
+}
+
+list! {
     A2ps,
     A65,
     Aap,
@@ -48,8 +82,7 @@ pub enum FileType {
     AspPerl,
     AspVbs,
     Asterisk,
-    #[strum(serialize = "asteriskvm")]
-    AsteriskVoiceMail,
+    AsteriskVoiceMail as "asteriskvm",
     Astro,
     Atlas,
     AutoHotKey,
@@ -160,13 +193,10 @@ pub enum FileType {
     DirColors,
     Diva,
     DnsMasq,
+    DocBookSgml4 as "docbk-sgml-4",
+    DocBookXml4 as "docbk-xml-4",
+    DocBookXml5 as "docbk-xml-5",
     Dockerfile,
-    #[strum(serialize = "docbk-sgml-4")]
-    DocBookSgml4,
-    #[strum(serialize = "docbk-xml-4")]
-    DocBookXml4,
-    #[strum(serialize = "docbk-xml-5")]
-    DocBookXml5,
     DosBatch,
     DosIni,
     Dot,
@@ -228,10 +258,8 @@ pub enum FileType {
     Func,
     Fusion,
     Fvwm,
-    #[strum(serialize = "fvwm-1")]
-    Fvwm1,
-    #[strum(serialize = "fvwm-2")]
-    Fvwm2,
+    Fvwm1 as "fvwm-1",
+    Fvwm2 as "fvwm-2",
     Fvwm2M4,
     Gdb,
     Gdmo,
@@ -305,7 +333,6 @@ pub enum FileType {
     Inform,
     Initng,
     InitTab,
-    #[strum(serialize = "ishd")]
     InstallShield,
     IpFilter,
     Iss,
@@ -316,8 +343,7 @@ pub enum FileType {
     Java,
     JavaCc,
     JavaScript,
-    #[strum(serialize = "javascript.glimmer")]
-    JavaScriptGlimmer,
+    JavaScriptGlimmer as "javascript.glimmer",
     Jess,
     JGraph,
     Jovial,
@@ -413,8 +439,7 @@ pub enum FileType {
     Move,
     Mp,
     MPlayerConf,
-    #[strum(serialize = "mp-metafun")]
-    MpMetafun,
+    MpMetafun as "mp-metafun",
     Mrxvtrc,
     Msidl,
     MsMessages,
@@ -503,10 +528,8 @@ pub enum FileType {
     Ps1Xml,
     Psf,
     Psl,
-    #[strum(serialize = "ptcap-print")]
-    PtcapPrint,
-    #[strum(serialize = "ptcap-term")]
-    PtcapTerm,
+    PtcapPrint as "ptcap-print",
+    PtcapTerm as "ptcap-term",
     Pug,
     Puppet,
     Pyret,
@@ -653,8 +676,7 @@ pub enum FileType {
     Teraterm,
     Terminfo,
     Terraform,
-    #[strum(serialize = "terraform-vars")]
-    TerraformVars,
+    TerraformVars as "terraform-vars",
     Tex,
     TexInfo,
     TexMF,
@@ -669,9 +691,8 @@ pub enum FileType {
     Tpp,
     Trace32,
     Trasys,
+    TreeSitterQuery as "query",
     Treetop,
-    #[strum(serialize = "query")]
-    TreeSitterQuery,
     Trustees,
     Tsalt,
     Tsscl,
@@ -683,8 +704,7 @@ pub enum FileType {
     Tutor,
     Twig,
     TypeScript,
-    #[strum(serialize = "typescript.glimmer")]
-    TypeScriptGlimmer,
+    TypeScriptGlimmer as "typescript.glimmer",
     Typst,
     Uc,
     UdevConf,
@@ -715,8 +735,7 @@ pub enum FileType {
     Vhdl,
     Vhs,
     Vim,
-    #[strum(serialize = "help")]
-    VimHelp,
+    VimHelp as "help",
     VimInfo,
     Virata,
     Vmasm,
@@ -740,10 +759,8 @@ pub enum FileType {
     Xbl,
     XDefaults,
     XF86Conf,
-    #[strum(serialize = "xf86conf-3")]
-    XF86Conf3,
-    #[strum(serialize = "xf86conf-4")]
-    XF86Conf4,
+    XF86Conf3 as "xf86conf-3",
+    XF86Conf4 as "xf86conf-4",
     Xhtml,
     Xinetd,
     XMath,
@@ -774,3 +791,4 @@ pub enum FileType {
 // - javascriptreact -> jsx
 // - typescriptreact -> tsx
 // - lifelines -> -
+// - ishd -> installshield

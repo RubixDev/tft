@@ -1,13 +1,21 @@
 [package]
 name = "tft"
 version = "0.1.0"
+authors = ["RubixDev <silas.groh@t-online.de>"]
 edition = "2021"
+keywords = ["tree-sitter", "syntect", "highlight", "parsing", "syntax"]
+license = "GPL-3.0-only"
+repository = "https://github.com/RubixDev/tft"
+description = "Text file type list and detection similar to that of Neovim"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
+#! ## Features
 default = ["detect"]
 
+## Provide the [`detect`](detect()) and [`try_detect`] functions for detecting a
+## file type from a path and file content
 detect = [
     "dep:aho-corasick",
     "dep:lazy-regex",
@@ -16,13 +24,26 @@ detect = [
     "dep:regex",
 ]
 
-serde = ["dep:serde_with"]
+## Provide [`serde::Serialize`] and [`serde::Deserialize`] implementations for [`FileType`]
+serde = ["dep:serde", "dep:serde_with"]
+
+## Enable this when building the docs
+docs = ["dep:document-features", "dep:rustc_version"]
 
 [dependencies]
 aho-corasick = { version = "1.0.2", optional = true }
+casey = "0.4.0"
+document-features = { version = "0.2.7", optional = true }
 lazy-regex = { version = "3.0.0", optional = true }
 once_cell = { version = "1.18.0", optional = true }
 phf = { version = "0.11.2", features = ["macros"], optional = true }
 regex = { version = "1.9.1", optional = true }
+serde = { version = "1.0.180", optional = true }
 serde_with = { version = "3.1.0", optional = true }
 strum = { version = "0.25.0", features = ["derive", "phf"] }
+
+[build-dependencies]
+rustc_version = { version = "0.4.0", optional = true }
+
+[package.metadata.docs.rs]
+all-features = true
