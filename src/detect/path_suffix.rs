@@ -62,7 +62,7 @@ pub(crate) const PATH_SUFFIX: &[(&str, FileTypeResolver)] = &[
     ("etc/services", FileTypeResolver::Static(FileType::Services)),
     ("etc/serial.conf", FileTypeResolver::Static(FileType::SetSerial)),
     ("etc/udev/cdsymlinks.conf", FileTypeResolver::Static(FileType::Sh)),
-    ("etc/profile", FileTypeResolver::Dynamic(&|_, content| detect::sh(content, None))),
+    ("etc/profile", FileTypeResolver::Dynamic(|_, content| detect::sh(content, None))),
     ("etc/slp.conf", FileTypeResolver::Static(FileType::SlpConf)),
     ("etc/slp.reg", FileTypeResolver::Static(FileType::SlpReg)),
     ("etc/slp.spi", FileTypeResolver::Static(FileType::SlpSpi)),

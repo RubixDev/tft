@@ -13,7 +13,7 @@ mod list;
 #[cfg(feature = "detect")]
 enum FileTypeResolver {
     Static(FileType),
-    Dynamic(&'static dyn Fn(&Path, &str) -> Option<FileType>),
+    Dynamic(fn(&Path, &str) -> Option<FileType>),
 }
 
 #[cfg(feature = "detect")]

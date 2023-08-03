@@ -34,7 +34,7 @@ pub fn try_detect(path: &Path, content: &str) -> Option<FileType> {
     if let Some(resolver) = path
         .file_name()
         .and_then(|os_name| os_name.to_str())
-        .and_then(|filename| FILENAME.with(|filenames| filenames.get(filename).cloned()))
+        .and_then(|filename| FILENAME.get(filename))
     {
         if let Some(ft) = resolver.resolve(path, content) {
             return Some(ft);
@@ -43,34 +43,29 @@ pub fn try_detect(path: &Path, content: &str) -> Option<FileType> {
 
     // patterns (non-negative priority)
     let mut negative_prio_start_index = 0;
-    if let Some(ft) = PATTERN.with(|patterns| {
-        for (index, (match_full_path, regex, pat)) in patterns.iter().enumerate() {
-            if pat.priority.map_or(false, |prio| prio < 0) {
-                negative_prio_start_index = index;
-                break;
-            }
-            if match match_full_path {
-                true => path.to_str(),
-                false => path.file_name().and_then(|os_name| os_name.to_str()),
-            }
-            .map_or(true, |haystack| !regex.is_match(haystack))
-            {
-                continue;
-            }
-            if let Some(ft) = pat.resolver.resolve(path, content) {
-                return Some(ft);
-            }
+    for (index, (match_full_path, regex, pat)) in PATTERN.iter().enumerate() {
+        if pat.priority.map_or(false, |prio| prio < 0) {
+            negative_prio_start_index = index;
+            break;
         }
-        None
-    }) {
-        return Some(ft);
+        if match match_full_path {
+            true => path.to_str(),
+            false => path.file_name().and_then(|os_name| os_name.to_str()),
+        }
+        .map_or(true, |haystack| !regex.is_match(haystack))
+        {
+            continue;
+        }
+        if let Some(ft) = pat.resolver.resolve(path, content) {
+            return Some(ft);
+        }
     }
 
     // file extension
     if let Some(resolver) = path
         .extension()
         .and_then(|os_ext| os_ext.to_str())
-        .and_then(|ext| FILE_EXTENSION.with(|extensions| extensions.get(ext).cloned()))
+        .and_then(|ext| FILE_EXTENSION.get(ext))
     {
         if let Some(ft) = resolver.resolve(path, content) {
             return Some(ft);
@@ -78,23 +73,18 @@ pub fn try_detect(path: &Path, content: &str) -> Option<FileType> {
     }
 
     // patterns (negative priority)
-    if let Some(ft) = PATTERN.with(|patterns| {
-        for (match_full_path, regex, pat) in patterns.iter().skip(negative_prio_start_index) {
-            if match match_full_path {
-                true => path.to_str(),
-                false => path.file_name().and_then(|os_name| os_name.to_str()),
-            }
-            .map_or(true, |haystack| !regex.is_match(haystack))
-            {
-                continue;
-            }
-            if let Some(ft) = pat.resolver.resolve(path, content) {
-                return Some(ft);
-            }
+    for (match_full_path, regex, pat) in PATTERN.iter().skip(negative_prio_start_index) {
+        if match match_full_path {
+            true => path.to_str(),
+            false => path.file_name().and_then(|os_name| os_name.to_str()),
         }
-        None
-    }) {
-        return Some(ft);
+        .map_or(true, |haystack| !regex.is_match(haystack))
+        {
+            continue;
+        }
+        if let Some(ft) = pat.resolver.resolve(path, content) {
+            return Some(ft);
+        }
     }
 
     // file contents
