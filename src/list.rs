@@ -6,7 +6,8 @@ macro_rules! list {
         /// lowercase casing is used unless otherwise specified in the variants docs.
         ///
         /// - [`strum::Display`]: [`Display`](core::fmt::Display) formatting and a `.to_string()` method
-        /// - [`strum::AsRefStr`]: [`AsRef<str>`] impl
+        /// - [`strum::AsRefStr`]: [`AsRef<str>`] impl for conversion into `&str`
+        /// - [`strum::IntoStaticStr`]: [`From<FileType>`] impl for conversion into `&'static str`
         /// - [`strum::EnumString`]: [`FromStr`](core::str::FromStr) impl for turning strings into the
         ///   corresponding variant
         /// - [`strum::EnumVariantNames`]: an associated `VARIANTS` constant containing the string names of
@@ -23,6 +24,7 @@ macro_rules! list {
         #[derive(
             strum::Display,
             strum::AsRefStr,
+            strum::IntoStaticStr,
             strum::EnumString,
             strum::EnumVariantNames,
             Clone,
