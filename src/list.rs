@@ -720,6 +720,7 @@ list! {
     UpstreamInstallLog,
     UpstreamLog,
     UrlShortcut,
+    Ursa,
     Usd,
     UsServerLog,
     Usw2KagtLog,

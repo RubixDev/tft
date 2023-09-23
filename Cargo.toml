@@ -1,6 +1,6 @@
 [package]
 name = "tft"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["RubixDev <silas.groh@t-online.de>"]
 edition = "2021"
 keywords = ["tree-sitter", "syntect", "highlight", "parsing", "syntax"]

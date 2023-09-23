@@ -834,6 +834,7 @@ pub(crate) static FILE_EXTENSION: Map<&'static str, FileTypeResolver> = phf_map!
     "uil" => FileTypeResolver::Static(FileType::Uil),
     "ungram" => FileTypeResolver::Static(FileType::Ungrammar),
     "url" => FileTypeResolver::Static(FileType::UrlShortcut),
+    "ursa" => FileTypeResolver::Static(FileType::Ursa),
     "usd" => FileTypeResolver::Static(FileType::Usd),
     "usda" => FileTypeResolver::Static(FileType::Usd),
     "sba" => FileTypeResolver::Static(FileType::Vb),
